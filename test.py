@@ -38,55 +38,63 @@ def parse_pnr_data(pnr_data):
     # LH 433Y 15DEC F ORDFRA*SS1 1035P 1500P 16DEC J /DCLH /E -> pattern1
     # QR 740S 18MAR 1 LAXDOH*SS1  1615  1750 19MAR 2 /DCQR /E
     pattern = r"([A-Z]{3})\s*(\d{3})([A-Z]{1})\s*(\d{2}[A-Z]{3})\s*([A-Z]{1})\s*([A-Z]{3})([A-Z]{3})\*([A-Z]{2}\d{1})\s*(\d{4}[A-Z]{1})\s*(\d{4}[A-Z]{1})\s*(\d{2}[A-Z]{3})\s*([A-Z]{1})\s*(/[A-Z]{4})\s*(/[A-Z]{1})"
-    p = r"([A-Z]{3})"
-    # Use the regular expression to match the pattern in the data
-    result = re.match(pattern, pnr_data)
-    if result:
+    pattern2 = r"([A-Z]{3})"
+    if re.match(pattern, pnr_data):
+        result = re.match(pattern, pnr_data)
+        if result:
         # Extract information from the matched groups
-        for row in airport_rows:
-            if row[0] == result.group(1):
-                operated_airline = row[2]
-        # airline_code = result.group(1)
-        flight_number = result.group(2)
-        flight_class = result.group(3)
-        for row in week_rows:
-            if row[0] == result.group(5):
-                # (result.group(4), row[1])
-                # f"{result.group(5)}, {row[1]}"
-                departure_date = f"{result.group(4)}, {row[1]}"
-        for row in airport_rows:
-            if row[0] == result.group(6):
-                where_from = row[1]
-        for row in airport_rows:
-            if row[0] == result.group(7):
-                where_to = row[1]
-        for row in week_rows:
-            if row[0] == result.group(12):
-                arrival_date = f"{result.group(11)}, {row[1]}"
-        # route = result.group(6)
-        # .strftime("%I:%M%p")
-        # .strftime("%H:%M%p")
-        departure_time_date = f"""{datetime.strptime(
-            result.group(9)[0:4], '%H%M').strftime('%H:%M %p')} {departure_date}"""
+            for row in airport_rows:
+                if row[0] == result.group(1):
+                    operated_airline = row[2]
+            # airline_code = result.group(1)
+            flight_number = result.group(2)
+            # flight_class = result.group(3)
+            for row in week_rows:
+                if row[0] == result.group(5):
+                    # (result.group(4), row[1])
+                    # f"{result.group(5)}, {row[1]}"
+                    departure_date = f"{result.group(4)}, {row[1]}"
+            for row in airport_rows:
+                if row[0] == result.group(6):
+                    where_from = row[1]
+            for row in airport_rows:
+                if row[0] == result.group(7):
+                    where_to = row[1]
+            for row in week_rows:
+                if row[0] == result.group(12):
+                    arrival_date = f"{result.group(11)}, {row[1]}"
+            # route = result.group(6)
+            # .strftime("%I:%M%p")
+            # .strftime("%H:%M%p")
+            departure_time_date = f"""{datetime.strptime(
+                result.group(9)[0:4], '%H%M').strftime('%H:%M %p')} {departure_date}"""
 
-        arrival_time_date = f"""{datetime.strptime(
-            result.group(10)[0:4], '%H%M').strftime('%H:%M %p')} {arrival_date}"""
+            arrival_time_date = f"""{datetime.strptime(
+                result.group(10)[0:4], '%H%M').strftime('%H:%M %p')} {arrival_date}"""
 
-        # Return the extracted information as a dictionary
-        return [
-            (
-                operated_airline,
-                flight_number,
-                departure_time_date,
-                where_from,
-                arrival_time_date,
-                # where_to,
-                "temporary unknown",
-                "Layover time"
-            )
-        ]
-    else:
-        return None
+            # Return the extracted information as a dictionary
+            return [
+                (
+                    operated_airline,
+                    flight_number,
+                    departure_time_date,
+                    where_from,
+                    arrival_time_date,
+                    # where_to,
+                    "temporary unknown",
+                    "Layover time"
+                )
+            ]
+        else:
+            return None
+        
+    elif re.match(pattern2, pnr_data):
+        result = re.match(pattern2, pnr_data)
+        if result:
+            return [("matched",)]
+    # Use the regular expression to match the pattern in the data
+    
+    
     '''
     {
             "Departure Date": departure_date,
