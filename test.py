@@ -115,7 +115,6 @@ def parse_pnr_data(pnr_data):
 # Example usage
 pnr_data = "AZO 433Y 15DEC F ORDFRA*SS1 1035P 1500P 16DEC W /DCLH /E"
 result = parse_pnr_data(pnr_data)
-print(result)
 
 # if result:
 #    for key, value in result.items():

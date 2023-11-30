@@ -75,11 +75,27 @@ class Window(QWidget):
     # run the convertion
     def on_button_clicked(self):
         passed_pnr = self.input_field.toPlainText()
-        parsed = parse_pnr_data(passed_pnr)
-        for row, item in enumerate(parsed):
-            self.tableNew.insertRow(row)
-            for col, value in enumerate(item):
-                self.tableNew.setItem(row, col, QTableWidgetItem(value))
+        if "\n" in passed_pnr:
+            pss1 = passed_pnr.split("\n")
+            print(pss1)
+            for item in pss1:
+                parsed1 = parse_pnr_data(item)
+                for row, data in enumerate(parsed1):
+                    self.tableNew.insertRow(row)
+                    for col, value in enumerate(data):
+                        self.tableNew.setItem(row, col, QTableWidgetItem(value))
+        else:
+            try:
+                parsed = parse_pnr_data(passed_pnr)
+                for row, item in enumerate(parsed):
+                    self.tableNew.insertRow(row)
+                    for col, value in enumerate(item):
+                        self.tableNew.setItem(row, col, QTableWidgetItem(value))
+            except:
+                msg = QMessageBox()
+                msg.setText("Something went wrong, try again")
+                x = msg.exec_()
+        
         '''
         if parsed:
             for key, value in parsed.items():
