@@ -39,17 +39,22 @@ class Window(QWidget):
         self.input_field.setPlaceholderText("Enter PNR")
         self.input_field.setStyleSheet(styles.input_field_style)
 
-        # button widget
+        # convert button widget
         self.button = QPushButton("Press to convert")
         self.button.clicked.connect(self.on_button_clicked)
         self.button.setFixedSize(150, 25)
         self.button.setStyleSheet(styles.button_style)
 
+        # clear button widget
+        self.clear_button = QPushButton("Clear the table")
+        self.clear_button.clicked.connect(self.clear_table)
+        self.clear_button.setFixedSize(150, 25)
+        self.clear_button.setStyleSheet(styles.button_style)
         # table
         self.creatingTable()
         # layout box
         self.vbox.addWidget(self.input_field, alignment=Qt.AlignCenter)
-
+        self.vbox.addWidget(self.clear_button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.tableNew)
         self.setLayout(self.vbox)
@@ -113,6 +118,11 @@ class Window(QWidget):
     def copy_converted_pnr(self):
         pass
 
+    def clear_table(self):
+        while self.tableNew.rowCount() > 0:
+            self.tableNew.removeRow(0)
+            # self.tableNew.clear()
+            # self.tableNew.setRowCount(1)
 
 window = Window()
 sys.exit(app.exec_())
