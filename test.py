@@ -42,7 +42,7 @@ def parse_pnr_data(pnr_data):
     if re.match(pattern, pnr_data):
         result = re.match(pattern, pnr_data)
         if result:
-        # Extract information from the matched groups
+            # Extract information from the matched groups
             for row in airport_rows:
                 if row[0] == result.group(1):
                     operated_airline = row[2]
@@ -87,37 +87,13 @@ def parse_pnr_data(pnr_data):
             ]
         else:
             return None
-        
+
     elif re.match(pattern2, pnr_data):
         result = re.match(pattern2, pnr_data)
         if result:
             return [("matched",)]
-    # Use the regular expression to match the pattern in the data
-    
-    
-    '''
-    {
-            "Departure Date": departure_date,
-            "Airline": operated_airline,
-            "Flight Number": flight_number,
-            "Departure Time": departure_time,
-            "Where_from": where_from,
-            "Arrival Time": arrival_time,
-            "Where_to": where_to,
-            "Duration": "unknown for a moment",
-            # "Class": flight_class,
-            # "Arrival Date": arrival_date,
-            # "Booking Code": booking_code
-        }
-    '''
 
 
 # Example usage
 pnr_data = "AZO 433Y 15DEC F ORDFRA*SS1 1035P 1500P 16DEC W /DCLH /E"
 result = parse_pnr_data(pnr_data)
-
-# if result:
-#    for key, value in result.items():
-#        print(f"{key}: {value}")
-# else:
-#    print("Unable to parse PNR data.")

@@ -54,8 +54,8 @@ class Window(QWidget):
         self.creatingTable()
         # layout box
         self.vbox.addWidget(self.input_field, alignment=Qt.AlignCenter)
-        self.vbox.addWidget(self.clear_button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.button, alignment=Qt.AlignCenter)
+        self.vbox.addWidget(self.clear_button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.tableNew)
         self.setLayout(self.vbox)
 
@@ -84,27 +84,31 @@ class Window(QWidget):
             if "\n" in passed_pnr:
                 pss1 = passed_pnr.split("\n")
                 print(pss1)
+                pss1.reverse()
                 for item in pss1:
                     parsed1 = parse_pnr_data(item)
                     for row, data in enumerate(parsed1):
                         self.tableNew.insertRow(row)
                         for col, value in enumerate(data):
-                            self.tableNew.setItem(row, col, QTableWidgetItem(value))
+                            self.tableNew.setItem(
+                                row, col, QTableWidgetItem(value))
             else:
                 parsed = parse_pnr_data(passed_pnr)
                 for row, item in enumerate(parsed):
                     self.tableNew.insertRow(row)
                     for col, value in enumerate(item):
-                        self.tableNew.setItem(row, col, QTableWidgetItem(value))
+                        self.tableNew.setItem(
+                            row, col, QTableWidgetItem(value))
                 '''            
                 except:
                     msg = QMessageBox()
                     msg.setText("Something went wrong, try again")
                     x = msg.exec_()
-                '''    
+                '''
         except:
             msg = QMessageBox()
-            msg.setText("Something went wrong, try again\nCheck correctness of PNR")
+            msg.setText(
+                "Something went wrong, try again\nCheck correctness of PNR")
             x = msg.exec_()
         '''
         if parsed:
@@ -123,6 +127,7 @@ class Window(QWidget):
             self.tableNew.removeRow(0)
             # self.tableNew.clear()
             # self.tableNew.setRowCount(1)
+
 
 window = Window()
 sys.exit(app.exec_())
