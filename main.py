@@ -3,6 +3,7 @@ import styles
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
+from PyQt5 import QtCore
 from test import parse_pnr_data
 
 app = QApplication(sys.argv)
@@ -18,7 +19,7 @@ min_screen_height = screen_height // 2
 class Window(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        # init the window
         self.initUI()
 
     def initUI(self):
@@ -32,12 +33,13 @@ class Window(QWidget):
         self.vbox = QVBoxLayout()
 
         # input widget
-        self.input_field = QTextEdit()
+        self.input_field = QPlainTextEdit()
         self.input_field.setContentsMargins(0, 0, 0, 20)
         self.input_field.setFixedSize(700, 150)
-        self.input_field.setAutoFormatting(QTextEdit.AutoBulletList)
+        # self.input_field.setAutoFormatting(QTextEdit.AutoBulletList)
         self.input_field.setPlaceholderText("Enter PNR")
-        self.input_field.setStyleSheet(styles.input_field_style)
+        # styles.input_field_style
+        self.input_field.setStyleSheet("background-color: white;")
 
         # convert button widget
         self.button = QPushButton("Press to convert")
@@ -50,19 +52,23 @@ class Window(QWidget):
         self.clear_button.clicked.connect(self.clear_table)
         self.clear_button.setFixedSize(150, 25)
         self.clear_button.setStyleSheet(styles.button_style)
+        # copy button
+        self.copy_button = QPushButton("Copy the table")
+        self.copy_button.clicked.connect(self.copy_pnr)
+        self.copy_button.setFixedSize(150, 25)
+        self.copy_button.setStyleSheet(styles.button_style)
+
         # table
         self.creatingTable()
         # layout box
         self.vbox.addWidget(self.input_field, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.button, alignment=Qt.AlignCenter)
+        self.vbox.addWidget(self.copy_button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.clear_button, alignment=Qt.AlignCenter)
         self.vbox.addWidget(self.tableNew)
         self.setLayout(self.vbox)
 
         self.vbox.setContentsMargins(25, 25, 25, 25)
-        # self.vbox.addStretch()
-
-        # init the window
 
         self.show()
 
@@ -76,6 +82,7 @@ class Window(QWidget):
         self.tableNew.horizontalHeader().setStretchLastSection(True)
         self.tableNew.horizontalHeader().setSectionResizeMode(
             QHeaderView.Stretch)
+        self.tableNew.setEditTriggers(QTableWidget.NoEditTriggers)
 
     # run the convertion
     def on_button_clicked(self):
@@ -83,7 +90,7 @@ class Window(QWidget):
         try:
             if "\n" in passed_pnr:
                 pss1 = passed_pnr.split("\n")
-                print(pss1)
+                # print(pss1)
                 pss1.reverse()
                 for item in pss1:
                     parsed1 = parse_pnr_data(item)
@@ -92,6 +99,7 @@ class Window(QWidget):
                         for col, value in enumerate(data):
                             self.tableNew.setItem(
                                 row, col, QTableWidgetItem(value))
+                self.input_field.clear()
             else:
                 parsed = parse_pnr_data(passed_pnr)
                 for row, item in enumerate(parsed):
@@ -99,28 +107,33 @@ class Window(QWidget):
                     for col, value in enumerate(item):
                         self.tableNew.setItem(
                             row, col, QTableWidgetItem(value))
+                self.input_field.clear()
                 '''            
                 except:
                     msg = QMessageBox()
                     msg.setText("Something went wrong, try again")
                     x = msg.exec_()
                 '''
-        except:
+        except Exception as error:
+            print(error)
             msg = QMessageBox()
             msg.setText(
                 "Something went wrong, try again\nCheck correctness of PNR")
             x = msg.exec_()
-        '''
-        if parsed:
-            for key, value in parsed.items():
-                print(f"{key}: {value}")
-        else:
-            print("Unable to parse PNR")
-        '''
-    # copying converted pnr
 
-    def copy_converted_pnr(self):
-        pass
+    # copying converted pnr
+    def copy_pnr(self):
+        clipboard = QApplication.clipboard()
+        all_data = []
+
+        for row in range(self.tableNew.rowCount()):
+            for col in range(self.tableNew.columnCount()):
+                item = self.tableNew.item(row, col)
+                if item is not None:
+                    all_data.append(item.text())
+
+        print(all_data)
+        clipboard.setText("\t".join(all_data))
 
     def clear_table(self):
         while self.tableNew.rowCount() > 0:
@@ -129,5 +142,6 @@ class Window(QWidget):
             # self.tableNew.setRowCount(1)
 
 
-window = Window()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    window = Window()
+    sys.exit(app.exec_())

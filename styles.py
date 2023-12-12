@@ -1,6 +1,5 @@
 input_field_style = '''
                     QTextEdit {
-                    font-family: 'Roboto', sans-serif;
                     color: black;
                     font-size: 14px;
                     background-color: white;

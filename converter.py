@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 import requests
+import csv
 
 
 class FlightInfo:
@@ -28,3 +29,13 @@ if codes:
     for row in rows:
         print(row)
 # print(list1)
+
+col1 = []
+row1 = []
+with open("csvssss/airlines.csv", "r") as air_csv:
+    cvs_reader = csv.reader(air_csv)
+
+    for row in cvs_reader:
+        row1.append(row)
+
+print(row1[1])
